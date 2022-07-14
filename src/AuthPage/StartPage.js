@@ -1,8 +1,35 @@
 import React from 'react'
-import {Alert,Button,View} from 'react-native'
+import {Alert,TouchableOpacity,View,StyleSheet,Text,Image} from 'react-native'
 import TouchID from 'react-native-touch-id'
 
 function StartPage({navigation}) {
+
+    const styles = StyleSheet.create({
+        container:{
+            flex: 1,
+            alignItems: "center",
+            backgroundColor: "#323232"
+        },
+        button:{
+            backgroundColor: "#64c864",
+            width: 100,
+            height: 50,
+            marginTop: 350,
+            borderRadius: 5,
+            alignItems: "center",
+            justifyContent: "center"
+        },
+        font:{
+            fontSize: 20,
+            fontWeight: "bold"
+        },
+        maintextfont:{
+            marginTop: 100,
+            fontSize: 40,
+            fontWeight: "bold"
+        }
+    });
+
 
     const optionalConfigObject = {
         title: 'Authentication Required', //타이틀,
@@ -44,8 +71,11 @@ function StartPage({navigation}) {
     }
     
   return (
-    <View>
-        <Button title="Login" onPress={AuthHandler} />
+    <View style={styles.container}>
+        <Text style={styles.maintextfont}>Analysis{"\n"}Application</Text>
+        <TouchableOpacity onPress={AuthHandler} style={styles.button}>
+            <Text style={styles.font}>LOGIN</Text>
+        </TouchableOpacity>
     </View>
 
   )
