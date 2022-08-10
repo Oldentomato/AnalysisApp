@@ -1,5 +1,5 @@
 import React from 'react'
-import {Alert,TouchableOpacity,View,StyleSheet,Text,Image} from 'react-native'
+import {Alert,TouchableOpacity,View,StyleSheet,Text} from 'react-native'
 import TouchID from 'react-native-touch-id'
 
 function StartPage({navigation}) {
@@ -72,10 +72,12 @@ function StartPage({navigation}) {
     
   return (
     <View style={styles.container}>
+
         <Text style={styles.maintextfont}>Analysis{"\n"}Application</Text>
         <TouchableOpacity onPress={AuthHandler} style={styles.button}>
             <Text style={styles.font}>LOGIN</Text>
         </TouchableOpacity>
+
     </View>
 
   )

@@ -61,6 +61,8 @@ function MainPage({navigation}) {
                 {element.isactive === true ? <Text style={styles.activefont}>Activating</Text>:
                 <Text style={styles.stopfont}>Stopped</Text>}
                  <Text>Early_Stopped: {element.isearlystop ? "True" : "False"}</Text>
+                 <Text>Now Epoch: {(element.epoch.length - 1) + 1}</Text>
+                 <Text>Max Epoch: {element.max_epoch}</Text>
                 <Text>learning_rate: {element.learning_rate}</Text>
             </TouchableOpacity>
         );
@@ -70,7 +72,7 @@ function MainPage({navigation}) {
     useEffect(()=>{//adb reverse tcp:3000 tcp:3000 으로 서버의 포트와 맞춰야한다.
         fetch(URL+'/api/').then(response=> response.json()).then(online=>{
             if(online.success === true){
-                fetch(URL+'/api/getdatas').then(response=> response.json()).then(result=>{
+                fetch(URL+'/api/res/getdatas').then(response=> response.json()).then(result=>{
                     setstatus("Server Online")
                     for(var i in result){
                         const form = {
