@@ -1,11 +1,15 @@
 import React,{useEffect,useState} from 'react'
 import {Alert,BackHandler,View, TouchableOpacity, Text, StyleSheet,ScrollView} from 'react-native'
 import RNExitApp from 'react-native-exit-app'
+import AWS_URL from '../address/address'
 
-
+//추가해야 할것
+//모델 선택 페이지 추가
+//모델리스트에서 파라미터들은 디테일페이지로 넘기고 현재 진행상황 프로그레스로만 확인
+//디테일에서 테스트 결과도 출력시키기
 function MainPage({navigation}) {
     const LocalURL = 'http://localhost:3000';
-    const URL = 'http://18.219.167.160:3000';
+    const URL = AWS_URL;
     const [data, setdata] = useState([]);
     const [status, setstatus] = useState("");
     const [isready, setisready] = useState(false);
@@ -55,15 +59,18 @@ function MainPage({navigation}) {
     const renderlist = data.map((element, index)=>{
         return(
             <TouchableOpacity key={index} style={styles.button} onPress={()=>{
-                navigation.navigate("Detail",{data: element})
+                if(element.logs.epoch > 0)
+                    navigation.navigate("Detail",{data: element})
             }} >
                 <Text>Model_Name: {element.model_name}</Text>
-                {element.isactive === true ? <Text style={styles.activefont}>Activating</Text>:
+                {element.logs.epoch+1 !== element.max_epoch ?
+                 <Text>Progressed: {(element.logs.epoch+1) / (element.max_epoch) * 100}%</Text>:
+                 <Text>isDone</Text>}
+                {/* {element.isactive === true ? <Text style={styles.activefont}>Activating</Text>:
                 <Text style={styles.stopfont}>Stopped</Text>}
-                 <Text>Early_Stopped: {element.isearlystop ? "True" : "False"}</Text>
-                 <Text>Now Epoch: {(element.epoch.length - 1) + 1}</Text>
-                 <Text>Max Epoch: {element.max_epoch}</Text>
-                <Text>learning_rate: {element.learning_rate}</Text>
+                 <Text>Early_Stopped: {element.isearlystop ? "True" : "False"}</Text> */}
+                 {/* <Text>Now Epoch: {(element.epoch_length - 1) + 1}</Text> */}
+
             </TouchableOpacity>
         );
     })
@@ -72,19 +79,25 @@ function MainPage({navigation}) {
     useEffect(()=>{//adb reverse tcp:3000 tcp:3000 으로 서버의 포트와 맞춰야한다.
         fetch(URL+'/api/').then(response=> response.json()).then(online=>{
             if(online.success === true){
-                fetch(URL+'/api/res/getdatas').then(response=> response.json()).then(result=>{
+                fetch(URL+'/api/pytorch/getdatas').then(response=> response.json()).then(result=>{
                     setstatus("Server Online")
                     for(var i in result){
                         const form = {
                             model_name :result[i].model_name,
-                            epoch: result[i].epoch,
+                            max_epoch: result[i].max_epoch,
                             acc: result[i].acc,
                             val_acc: result[i].val_acc,
                             loss: result[i].loss,
                             val_loss: result[i].val_loss,
-                            isactive: result[i].isactive,
-                            isearlystop: result[i].isearlystop,
-                            learning_rate: result[i].learning_rate
+                            // isactive: result[i].isactive,
+                            // isearlystop: result[i].isearlystop,
+                            learning_rate: result[i].learning_rate,
+                            batch_size: result[i].batch_size,
+                            optimizer: result[i].optimizer,
+                            sgd_momentum: result[i].sgd_momentum,
+                            lr_scheduler_gamma: result[i].lr_scheduler_gamma,
+                            lr_scheduler_step: result[i].lr_scheduler_step,
+                            logs: result[i].logs
                         }
                         setdata(data=>[...data, form])
                     }
