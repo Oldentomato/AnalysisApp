@@ -17,6 +17,7 @@ function DetailPage({route,navigation}) {
     const sgd_momentum = route.params.data.sgd_momentum
     const lr_scheduler_gamma = route.params.data.lr_scheduler_gamma
     const lr_scheduler_step = route.params.data.lr_scheduler_step
+    const test_acc = route.params.data.test_acc;
     
     useEffect(()=>{
         const backhandler = BackHandler.addEventListener('hardwareBackPress', ()=>{
@@ -38,6 +39,14 @@ function DetailPage({route,navigation}) {
             marginTop:15,
             fontSize: 30,
             marginBottom: 40
+        },
+        testresult_font:{
+            fontSize: 30,
+            marginBottom: 20,
+            marginTop: 20
+        },
+        chart_font:{
+            fontSize: 20
         }
     })
 
@@ -49,7 +58,7 @@ function DetailPage({route,navigation}) {
         }
         return (
             <>
-            <Text>{name1}</Text>
+            <Text style={styles.chart_font}>{name1}</Text>
             <ScrollView horizontal={true}>
             <LineChart
             data={{
@@ -108,7 +117,10 @@ function DetailPage({route,navigation}) {
         <Text>lr_scheduler_gamma: {lr_scheduler_gamma}</Text>
         <Text>lr_scheduler_step: {lr_scheduler_step}</Text>
             {DrawChart("accuracy", "val_accuracy", acc, val_acc)}
+            <Text>Best_Val_Accuracy : {Math.max.apply(null,val_acc)} in {val_acc.indexOf(Math.max.apply(null,val_acc))}epoch</Text>
             {DrawChart("loss","val_loss", loss,val_loss)}
+            <Text>Best_Val_Loss : {Math.min.apply(null,val_loss)} in {val_loss.indexOf(Math.min.apply(null,val_loss))}epoch</Text>
+        <Text style={styles.testresult_font}>Test_Result : {test_acc}%</Text>
         </ScrollView>
 
 

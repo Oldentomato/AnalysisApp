@@ -2,11 +2,10 @@ import React,{useEffect,useState} from 'react'
 import {Alert,BackHandler,View, TouchableOpacity, Text, StyleSheet,ScrollView} from 'react-native'
 import RNExitApp from 'react-native-exit-app'
 import AWS_URL from '../address/address'
+import * as Progress from 'react-native-progress';
 
 //추가해야 할것
 //모델 선택 페이지 추가
-//모델리스트에서 파라미터들은 디테일페이지로 넘기고 현재 진행상황 프로그레스로만 확인
-//디테일에서 테스트 결과도 출력시키기
 function MainPage({navigation}) {
     const LocalURL = 'http://localhost:3000';
     const URL = AWS_URL;
@@ -24,25 +23,21 @@ function MainPage({navigation}) {
             fontSize: 15,
             color: '#0aff0a',
         },
-        activefont:{
+        donefont:{
             fontSize: 15,
-            color: '#32ff32',
-        },
-        stopfont:{
-            fontSize: 15,
-            color: '#ff3232',
+            color: '#0aff0a',
         },
         button:{
             width: 200,
             marginTop: 50,
-            backgroundColor: '#c85ac8',
+            backgroundColor: '#000000',
             width: 350,
             paddingTop: 50,
             paddingBottom: 50,
             paddingLeft: 20,
-            borderColor: '#000000',
             borderWidth: 3,
-            borderColor: '#ffc832'
+            borderColor: '#fff',
+            borderRadius: 20
         },
         titlefont:{
             marginTop:15,
@@ -52,6 +47,9 @@ function MainPage({navigation}) {
         loadingfont:{
             fontSize: 30,
             fontWeight: 'bold'
+        },
+        progress:{
+            marginTop:10
         }
     })
 
@@ -65,11 +63,8 @@ function MainPage({navigation}) {
                 <Text>Model_Name: {element.model_name}</Text>
                 {element.logs.epoch+1 !== element.max_epoch ?
                  <Text>Progressed: {(element.logs.epoch+1) / (element.max_epoch) * 100}%</Text>:
-                 <Text>isDone</Text>}
-                {/* {element.isactive === true ? <Text style={styles.activefont}>Activating</Text>:
-                <Text style={styles.stopfont}>Stopped</Text>}
-                 <Text>Early_Stopped: {element.isearlystop ? "True" : "False"}</Text> */}
-                 {/* <Text>Now Epoch: {(element.epoch_length - 1) + 1}</Text> */}
+                 <Text style={styles.donefont}>isDone</Text>}
+                 <Progress.Bar style={styles.progress} progress={(element.logs.epoch+1) / element.max_epoch} width={200} />
 
             </TouchableOpacity>
         );
@@ -97,7 +92,9 @@ function MainPage({navigation}) {
                             sgd_momentum: result[i].sgd_momentum,
                             lr_scheduler_gamma: result[i].lr_scheduler_gamma,
                             lr_scheduler_step: result[i].lr_scheduler_step,
-                            logs: result[i].logs
+                            logs: result[i].logs,
+                            test_acc: result[i].test_acc
+
                         }
                         setdata(data=>[...data, form])
                     }
