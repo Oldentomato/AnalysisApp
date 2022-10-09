@@ -55,16 +55,29 @@ function MainPage({navigation}) {
 
 
     const renderlist = data.map((element, index)=>{
+        var progress
+        if(element.logs.epoch === NaN){
+            progress = <Text>Initializing</Text>
+        }
+        else if(element.logs.epoch+1 !== element.max_epoch){
+            progress = (
+            <>
+                <Text>Progressed: {(element.logs.epoch+1) / (element.max_epoch) * 100}%</Text>
+                <Progress.Bar style={styles.progress} progress={(element.logs.epoch+1) / element.max_epoch} width={200} />
+            </>
+            )
+        }
+        else{
+            progress = <Text style={styles.donefont}>isDone</Text>
+        }
+
         return(
             <TouchableOpacity key={index} style={styles.button} onPress={()=>{
                 if(element.logs.epoch > 0)
                     navigation.navigate("Detail",{data: element})
             }} >
                 <Text>Model_Name: {element.model_name}</Text>
-                {element.logs.epoch+1 !== element.max_epoch ?
-                 <Text>Progressed: {(element.logs.epoch+1) / (element.max_epoch) * 100}%</Text>:
-                 <Text style={styles.donefont}>isDone</Text>}
-                 <Progress.Bar style={styles.progress} progress={(element.logs.epoch+1) / element.max_epoch} width={200} />
+                {progress}
 
             </TouchableOpacity>
         );
