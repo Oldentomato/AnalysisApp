@@ -62,3 +62,4 @@ buck-out/
 
 #개인으로 추가한 것
 address
+private.pem
